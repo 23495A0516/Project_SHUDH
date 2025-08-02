@@ -1,0 +1,54 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <title>{% block title %}Project SHUDH{% endblock %}</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script src="https://unpkg.com/scrollreveal"></script>
+
+  <style>
+    .goog-te-banner-frame.skiptranslate,
+    .goog-logo-link,
+    .goog-te-gadget span {
+      display: none !important;
+    }
+    .goog-te-combo {
+      padding: 8px;
+      border-radius: 6px;
+      font-size: 14px;
+    }
+    body { top: 0 !important; }
+  </style>
+
+  <!-- Google Translate -->
+  <script type="text/javascript">
+    function googleTranslateElementInit() {
+      new google.translate.TranslateElement({
+        pageLanguage: 'en',
+        includedLanguages: 'en,hi,te,ta,ml,mr,bn,gu,kn,ur',
+        layout: google.translate.TranslateElement.InlineLayout.SIMPLE
+      }, 'google_translate_element');
+    }
+  </script>
+  <script src="//translate.google.com/translate_a/element.js?cb=googleTranslateElementInit"></script>
+</head>
+
+<body class="bg-gray-100 min-h-screen flex flex-col">
+  <!-- 🌐 Language Dropdown -->
+  <div class="flex justify-end p-2 bg-gray-800 text-white text-sm">
+    <span class="mr-2">🌐 Language:</span>
+    <div id="google_translate_element"></div>
+  </div>
+
+  <!-- 📄 Page Content -->
+  <main class="flex-grow">
+    {% block content %}{% endblock %}
+  </main>
+
+  <!-- 🚀 Footer -->
+  <footer class="bg-slate-800 text-center py-4 text-sm text-gray-300">
+    © 2025 Project SHUDH | Developed by Team SHUDH
+  </footer>
+</body>
+</html>

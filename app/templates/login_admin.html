@@ -1,0 +1,130 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <title>Admin Login – Project SHUDH</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script src="https://unpkg.com/scrollreveal"></script>
+
+  <style>
+    @keyframes fadeIn {
+      from { opacity: 0; transform: translateY(20px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+
+    .animate-fade-in {
+      animation: fadeIn 1s ease-in-out;
+    }
+
+    /* Hide unwanted Google Translate UI */
+    .goog-te-banner-frame.skiptranslate,
+    .goog-logo-link,
+    .goog-te-gadget span {
+      display: none !important;
+    }
+
+    .goog-te-combo {
+      padding: 6px;
+      font-size: 14px;
+      border-radius: 6px;
+    }
+
+    body { top: 0 !important; }
+  </style>
+
+  <!-- Google Translate -->
+  <script type="text/javascript">
+    function googleTranslateElementInit() {
+      new google.translate.TranslateElement({
+        pageLanguage: 'en',
+        includedLanguages: 'en,hi,te,ta,ml,mr,bn,gu,kn,ur',
+        layout: google.translate.TranslateElement.InlineLayout.SIMPLE
+      }, 'google_translate_element');
+    }
+  </script>
+  <script src="//translate.google.com/translate_a/element.js?cb=googleTranslateElementInit"></script>
+</head>
+
+<body class="bg-gradient-to-r from-indigo-100 via-purple-100 to-pink-100 min-h-screen flex flex-col">
+
+  <!-- Language & Time Bar -->
+  <div class="w-full bg-white py-2 px-4 shadow-md flex justify-end items-center space-x-3 text-sm">
+    <span class="text-gray-700">🌐 Select Language:</span>
+    <div id="google_translate_element"></div>
+  </div>
+
+  <!-- Login Form -->
+  <main class="flex-grow flex items-center justify-center">
+    <div class="w-full max-w-md bg-white p-8 rounded-xl shadow-2xl animate-fade-in">
+      <h2 class="text-3xl font-bold text-center text-indigo-600 mb-6">Admin Login</h2>
+      <form action="/login_admin" method="POST" class="space-y-5">
+        <div>
+          <label for="username" class="block text-gray-600 mb-1">Username</label>
+          <input type="text" id="username" name="username" required 
+                 class="w-full px-4 py-2 border rounded-lg focus:ring-2 focus:ring-indigo-400 focus:outline-none">
+        </div>
+
+        <div>
+          <label for="password" class="block text-gray-600 mb-1">Password</label>
+          <div class="relative">
+            <input type="password" id="password" name="password" required 
+                   class="w-full px-4 py-2 border rounded-lg focus:ring-2 focus:ring-indigo-400 focus:outline-none pr-10">
+            <span onclick="togglePassword()" class="absolute top-2 right-3 cursor-pointer text-gray-500 hover:text-indigo-600">
+              👁️
+            </span>
+          </div>
+        </div>
+
+        <button type="submit" 
+                class="w-full bg-indigo-600 text-white py-2 rounded-lg hover:bg-indigo-700 transition-all duration-300">
+          Login
+        </button>
+      </form>
+
+      <p class="text-sm text-gray-500 mt-6 text-center">© 2025 Project SHUDH. All rights reserved.</p>
+    </div>
+  </main>
+
+  <!-- Language memory script -->
+  <script>
+    function togglePassword() {
+      const passwordField = document.getElementById('password');
+      passwordField.type = passwordField.type === 'password' ? 'text' : 'password';
+    }
+
+    ScrollReveal().reveal('.w-full', { delay: 200, distance: '20px', origin: 'bottom' });
+
+    // Save selected language to localStorage
+    function preserveSelectedLanguage() {
+      const combo = document.querySelector(".goog-te-combo");
+      if (combo) {
+        combo.addEventListener("change", () => {
+          localStorage.setItem("selectedLang", combo.value);
+        });
+      }
+    }
+
+    // Reapply selected language from localStorage
+    function reselectLanguage() {
+      const selectedLang = localStorage.getItem("selectedLang");
+      if (selectedLang) {
+        const interval = setInterval(() => {
+          const combo = document.querySelector(".goog-te-combo");
+          if (combo && combo.value !== selectedLang) {
+            combo.value = selectedLang;
+            combo.dispatchEvent(new Event("change"));
+            clearInterval(interval);
+          }
+        }, 500);
+      }
+    }
+
+    window.addEventListener('load', () => {
+      reselectLanguage();
+      preserveSelectedLanguage();
+    });
+  </script>
+
+</body>
+</html>
