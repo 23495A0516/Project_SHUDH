@@ -1,0 +1,26 @@
+<!doctype html>
+<html>
+<head><meta charset="utf-8"/><title>Match Result</title><script src="https://cdn.tailwindcss.com"></script></head>
+<body class="bg-gray-50 min-h-screen p-6">
+  <div class="max-w-3xl mx-auto bg-white p-6 rounded shadow">
+    {% if matched %}
+      <h2 class="text-2xl text-green-700">Match Found ✅</h2>
+      <p>Matched user: <strong>{{ user.name }}</strong> ({{ user.email }})</p>
+      <p>Distance score: {{ "%.3f"|format(distance) }}</p>
+    {% else %}
+      <h2 class="text-2xl text-red-600">No Match Found</h2>
+      <p>The captured face did not match any record.</p>
+    {% endif %}
+
+    <div class="mt-4">
+      <p>Penalty ID: {{ penalty.id }}</p>
+      <p>Payment link (simulated): <a class="text-blue-600" href="{{ link }}">{{ link }}</a></p>
+      <p>OTP (simulated): <strong>{{ otp }}</strong></p>
+    </div>
+
+    <div class="mt-6">
+      <a href="/" class="bg-gray-700 text-white px-3 py-1 rounded">Back Home</a>
+    </div>
+  </div>
+</body>
+</html>

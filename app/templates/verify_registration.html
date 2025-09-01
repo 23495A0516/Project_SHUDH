@@ -1,0 +1,31 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <title>Verify OTP — Project SHUDH</title>
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <script src="https://cdn.tailwindcss.com"></script>
+</head>
+<body class="min-h-screen bg-gradient-to-br from-slate-900 to-black text-white flex items-center justify-center p-6">
+  <div class="w-full max-w-md bg-gray-800/70 p-8 rounded-2xl shadow-2xl">
+    <h2 class="text-2xl font-bold text-yellow-300 mb-2 text-center">OTP Verification</h2>
+    <p class="text-sm text-gray-300 text-center mb-6">
+      We sent an OTP to your email:
+      <strong>{{ user.email[:3] + '****' + user.email.split('@')[-1] }}</strong>.
+      Enter it below to complete registration.
+    </p>
+
+    <form method="post" class="space-y-4">
+      <input name="otp" type="text" maxlength="6" required placeholder="Enter OTP"
+             class="w-full p-3 rounded-lg bg-gray-900 border border-gray-700 focus:ring-2 focus:ring-yellow-400 outline-none" />
+      <button type="submit" class="w-full py-3 rounded-lg bg-yellow-500 hover:bg-yellow-600 font-semibold transition">
+        Verify OTP
+      </button>
+    </form>
+
+    <p class="mt-4 text-center text-gray-400 text-sm">
+      Didn’t receive OTP? Check your spam/junk folder.
+    </p>
+  </div>
+</body>
+</html>

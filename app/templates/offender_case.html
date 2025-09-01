@@ -1,0 +1,88 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8"/>
+  <title>Penalty Notice — Project SHUDH</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <script src="https://cdn.tailwindcss.com"></script>
+</head>
+<body class="bg-gray-950 text-gray-100 min-h-screen flex items-center justify-center p-6">
+  <div class="w-full max-w-3xl bg-gray-900/70 border border-green-500 rounded-2xl p-6 shadow-2xl">
+    <h1 class="text-2xl font-bold text-green-400 text-center">Penalty Notice</h1>
+
+    {% if invalid %}
+      <p class="mt-6 text-center text-red-400">Invalid or tampered link.</p>
+    {% elif expired %}
+      <p class="mt-6 text-center text-red-400">This link has expired. Please contact the office.</p>
+    {% else %}
+
+      <div class="mt-6 grid grid-cols-1 md:grid-cols-2 gap-4">
+        <!-- Evidence Section -->
+        <div class="bg-black/40 rounded-xl p-3">
+          <h3 class="text-sm text-gray-400 mb-2">Evidence</h3>
+          <img class="rounded-lg w-full"
+               src="{{ url_for('static', filename=case.image_path) }}" alt="evidence">
+        </div>
+
+        <!-- Offender & Case Details -->
+        <div class="bg-black/40 rounded-xl p-4 space-y-2">
+          <div>
+            <div class="text-sm text-gray-400">Name</div>
+            <div class="text-lg font-semibold">{{ offender.name if offender else 'Unidentified' }}</div>
+          </div>
+
+          <div>
+            <div class="text-sm text-gray-400 pt-2">Roll No.</div>
+            <div class="text-lg font-semibold">{{ offender.student_id if offender else '-' }}</div>
+          </div>
+
+          {% if offender %}
+          <div>
+            <div class="text-sm text-gray-400 pt-2">Department</div>
+            <div class="text-lg font-semibold">{{ offender.department or '-' }}</div>
+          </div>
+
+          <div>
+            <div class="text-sm text-gray-400 pt-2">Year</div>
+            <div class="text-lg font-semibold">{{ offender.year or '-' }}</div>
+          </div>
+
+          <div>
+            <div class="text-sm text-gray-400 pt-2">Contact</div>
+            <div class="text-lg font-semibold">{{ offender.contact or '-' }}</div>
+          </div>
+          {% endif %}
+
+          <div>
+            <div class="text-sm text-gray-400 pt-2">Amount</div>
+            <div class="text-lg font-bold text-red-300">₹{{ '%.0f'|format(case.amount or 0) }}</div>
+          </div>
+
+          <div>
+            <div class="text-sm text-gray-400 pt-2">Status</div>
+            <div class="text-lg font-semibold {% if case.paid %}text-green-400{% else %}text-yellow-300{% endif %}">
+              {{ 'Paid' if case.paid else 'Unpaid' }}
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Payment Section -->
+      {% if not case.paid %}
+      <form method="post" action="{{ url_for('main.offender_pay', token=token) }}" class="mt-6 text-center">
+        <button class="px-6 py-2 rounded-lg bg-green-600 hover:bg-green-700 font-semibold">
+          Pay Now
+        </button>
+      </form>
+      {% else %}
+      <p class="mt-6 text-center text-green-400">Thank you. Your payment has been received.</p>
+      {% endif %}
+
+      <!-- Footer Note -->
+      <p class="mt-6 text-xs text-center text-gray-400">
+        This secure link was sent to your email. Do not share it with others.
+      </p>
+    {% endif %}
+  </div>
+</body>
+</html>

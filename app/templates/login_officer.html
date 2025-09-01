@@ -1,128 +1,45 @@
-<!DOCTYPE html>
+<!doctype html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8" />
-  <title>Officer Login – Project SHUDH</title>
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta charset="utf-8" />
+  <title>Officer Login — Project SHUDH</title>
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
   <script src="https://cdn.tailwindcss.com"></script>
-  <script src="https://unpkg.com/scrollreveal"></script>
-
-  <style>
-    @keyframes fadeIn {
-      from { opacity: 0; transform: translateY(20px); }
-      to { opacity: 1; transform: translateY(0); }
-    }
-
-    .animate-fade-in {
-      animation: fadeIn 1s ease-in-out;
-    }
-
-    /* Hide unwanted Google Translate UI */
-    .goog-te-banner-frame.skiptranslate,
-    .goog-logo-link,
-    .goog-te-gadget span {
-      display: none !important;
-    }
-
-    .goog-te-combo {
-      padding: 6px;
-      font-size: 14px;
-      border-radius: 6px;
-    }
-
-    body { top: 0 !important; }
-  </style>
-
-  <!-- Google Translate -->
-  <script type="text/javascript">
-    function googleTranslateElementInit() {
-      new google.translate.TranslateElement({
-        pageLanguage: 'en',
-        includedLanguages: 'en,hi,te,ta,ml,mr,bn,gu,kn,ur',
-        layout: google.translate.TranslateElement.InlineLayout.SIMPLE
-      }, 'google_translate_element');
-    }
-  </script>
-  <script src="//translate.google.com/translate_a/element.js?cb=googleTranslateElementInit"></script>
 </head>
+<body class="min-h-screen bg-gradient-to-br from-gray-900 via-black to-gray-800 text-white flex items-center justify-center p-6">
+  <div class="w-full max-w-md bg-gray-800/70 p-8 rounded-2xl shadow-2xl animate-card">
+    <h2 class="text-2xl font-bold text-blue-300 mb-3 text-center">Officer Login</h2>
+    <p class="text-sm text-gray-300 text-center mb-6">Enter your officer credentials. An OTP will be sent to your registered email for verification.</p>
 
-<body class="bg-gradient-to-br from-green-100 via-emerald-100 to-blue-100 min-h-screen flex flex-col">
+    {% with messages = get_flashed_messages(with_categories=true) %}
+      {% if messages %}
+        {% for category, message in messages %}
+          <div class="mb-3 p-3 rounded-lg {% if category=='danger' %}bg-red-600{% elif category=='success' %}bg-green-600{% else %}bg-gray-700{% endif %}">
+            {{ message }}
+          </div>
+        {% endfor %}
+      {% endif %}
+    {% endwith %}
 
-  <!-- Language & Time Bar -->
-  <div class="w-full bg-white py-2 px-4 shadow-md flex justify-end items-center space-x-3 text-sm">
-    <span class="text-gray-700">🌐 Select Language:</span>
-    <div id="google_translate_element"></div>
+    <form method="post" class="space-y-4">
+      <input name="username" type="email" required placeholder="Official Email"
+             class="w-full p-3 rounded-lg bg-gray-900 border border-gray-700 focus:ring-2 focus:ring-blue-400 outline-none" />
+      <input name="password" type="password" required placeholder="Password"
+             class="w-full p-3 rounded-lg bg-gray-900 border border-gray-700 focus:ring-2 focus:ring-blue-400 outline-none" />
+
+      <button type="submit" class="w-full py-3 rounded-lg bg-blue-500 hover:bg-blue-600 font-semibold transition">
+        Send Login OTP
+      </button>
+    </form>
+
+    <p class="mt-4 text-center text-gray-400 text-sm">
+      Not registered? <a href="{{ url_for('main.register_officer') }}" class="text-blue-300 underline">Create officer account</a>
+    </p>
   </div>
 
-  <!-- Login Box -->
-  <main class="flex-grow flex items-center justify-center">
-    <div class="w-full max-w-md bg-white p-8 rounded-xl shadow-2xl animate-fade-in">
-      <h2 class="text-3xl font-bold text-center text-emerald-600 mb-6">Officer Login</h2>
-      <form action="/login_officer" method="POST" class="space-y-5">
-        <div>
-          <label for="username" class="block text-gray-600 mb-1">Username</label>
-          <input type="text" id="username" name="username" required 
-                 class="w-full px-4 py-2 border rounded-lg focus:ring-2 focus:ring-emerald-400 focus:outline-none">
-        </div>
-
-        <div>
-          <label for="password" class="block text-gray-600 mb-1">Password</label>
-          <div class="relative">
-            <input type="password" id="password" name="password" required 
-                   class="w-full px-4 py-2 border rounded-lg focus:ring-2 focus:ring-emerald-400 focus:outline-none pr-10">
-            <span onclick="togglePassword()" class="absolute top-2 right-3 cursor-pointer text-gray-500 hover:text-emerald-600">
-              👁️
-            </span>
-          </div>
-        </div>
-
-        <button type="submit" 
-                class="w-full bg-emerald-600 text-white py-2 rounded-lg hover:bg-emerald-700 transition-all duration-300">
-          Login
-        </button>
-      </form>
-
-      <p class="text-sm text-gray-500 mt-6 text-center">Only authorized officers are permitted.</p>
-    </div>
-  </main>
-
-  <!-- Scripts -->
-  <script>
-    function togglePassword() {
-      const passwordField = document.getElementById('password');
-      passwordField.type = passwordField.type === 'password' ? 'text' : 'password';
-    }
-
-    ScrollReveal().reveal('.w-full', { delay: 200, distance: '20px', origin: 'bottom' });
-
-    // Language memory script
-    function preserveSelectedLanguage() {
-      const combo = document.querySelector(".goog-te-combo");
-      if (combo) {
-        combo.addEventListener("change", () => {
-          localStorage.setItem("selectedLang", combo.value);
-        });
-      }
-    }
-
-    function reselectLanguage() {
-      const selectedLang = localStorage.getItem("selectedLang");
-      if (selectedLang) {
-        const interval = setInterval(() => {
-          const combo = document.querySelector(".goog-te-combo");
-          if (combo && combo.value !== selectedLang) {
-            combo.value = selectedLang;
-            combo.dispatchEvent(new Event("change"));
-            clearInterval(interval);
-          }
-        }, 500);
-      }
-    }
-
-    window.addEventListener('load', () => {
-      reselectLanguage();
-      preserveSelectedLanguage();
-    });
-  </script>
+  <style>
+    @keyframes cardIn { from {opacity:0; transform:translateY(10px) scale(.995)} to {opacity:1; transform:none} }
+    .animate-card { animation: cardIn .8s ease both; }
+  </style>
 </body>
 </html>

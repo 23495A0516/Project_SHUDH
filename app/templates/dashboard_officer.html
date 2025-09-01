@@ -1,59 +1,107 @@
-<!DOCTYPE html>
+<!doctype html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8">
-  <title>Officer Dashboard – Project SHUDH</title>
+  <meta charset="utf-8"/>
+  <title>Officer Dashboard - Project SHUDH</title>
   <script src="https://cdn.tailwindcss.com"></script>
-  <script src="https://unpkg.com/scrollreveal"></script>
+  <style>
+    @keyframes fadeIn {
+      from { opacity: 0; transform: translateY(10px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+    body {
+      animation: fadeIn 0.8s ease-out;
+    }
+    .btn-hover:hover {
+      box-shadow: 0 4px 15px rgba(0,0,0,0.2);
+      transform: translateY(-2px);
+      transition: all 0.2s ease-in-out;
+    }
+  </style>
 </head>
-<body class="bg-gray-100 min-h-screen font-sans text-gray-800">
+<body class="min-h-screen bg-gradient-to-br from-gray-50 to-gray-200 p-6">
+  <div class="max-w-6xl mx-auto bg-white rounded-xl shadow-lg p-6">
 
-  <header class="bg-blue-800 text-white py-6 shadow-lg">
-    <div class="max-w-7xl mx-auto px-4 flex justify-between items-center">
-      <h1 class="text-3xl font-bold">🚨 Officer Dashboard</h1>
-      <a href="/logout" class="bg-red-500 hover:bg-red-600 text-white px-4 py-2 rounded-lg transition">Logout</a>
-    </div>
-  </header>
+<!-- Header -->
+<div class="flex justify-between items-center mb-6 border-b pb-4">
+  <h1 class="text-3xl font-bold text-gray-800">👨‍💼 Officer Dashboard</h1>
+  <div>
+    <a href="{{ url_for('main.logout') }}" 
+       class="btn-hover inline-block px-4 py-2 bg-gray-700 text-white rounded-lg">
+      Logout
+    </a>
+  </div>
+</div>
 
-  <main class="max-w-7xl mx-auto mt-10 px-4">
+<!-- Upload Button -->
+<div class="mb-4">
+  <a href="{{ url_for('main.upload_spitting_case') }}"
+     class="px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700">
+     ➕ Upload Spitting Case
+  </a>
+</div>
 
-    <section class="mb-10">
-      <h2 class="text-2xl font-semibold text-blue-700 mb-4">🧼 Real-Time Hygiene Violations</h2>
-      <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6" id="violation-cards">
-
-        <!-- Example Card -->
-        <div class="bg-white p-5 rounded-xl shadow-md hover:shadow-xl transition transform hover:-translate-y-1">
-          <h3 class="font-bold text-lg text-red-600">Spitting Detected</h3>
-          <p class="text-sm text-gray-500">Location: Gate 3, Main Campus</p>
-          <p class="text-sm text-gray-500">Time: 10:45 AM, Jul 30, 2025</p>
-          <p class="text-sm text-gray-500">Matched ID: <strong>23495A0516</strong></p>
-          <a href="/compare" class="mt-2 inline-block text-blue-600 hover:underline text-sm">🔍 Review Match</a>
-        </div>
-
-        <!-- More cards can be added dynamically -->
-
-      </div>
-    </section>
-
-    <section class="mt-12">
-      <h2 class="text-2xl font-semibold text-blue-700 mb-4">📄 Summary Reports</h2>
-      <div class="bg-white p-6 rounded-xl shadow-md">
-        <p class="text-sm mb-4">Generate daily or monthly summaries of hygiene violations.</p>
-        <button class="bg-green-600 text-white px-5 py-2 rounded hover:bg-green-700 transition">Download Daily Report</button>
-        <button class="bg-yellow-600 text-white px-5 py-2 rounded hover:bg-yellow-700 transition ml-4">Download Monthly Report</button>
-      </div>
-    </section>
-
-  </main>
-
-  <footer class="text-center mt-16 text-sm text-gray-500">
-    © 2025 Project SHUDH – Built for Public Hygiene Automation
-  </footer>
-
-  <script>
-    ScrollReveal().reveal('section', { interval: 200, origin: 'bottom', distance: '30px', duration: 800 });
-    ScrollReveal().reveal('header', { origin: 'top', distance: '50px', duration: 700 });
-  </script>
-
+<!-- Cases Table -->
+<div class="overflow-x-auto">
+  <table class="w-full border-collapse text-left">
+    <thead>
+      <tr class="bg-gray-100 text-gray-700 uppercase text-sm">
+        <th class="p-3">ID</th>
+        <th class="p-3">Offender</th>
+        <th class="p-3">Image</th>
+        <th class="p-3">Matched</th>
+        <th class="p-3">Paid</th>
+        <th class="p-3">Action</th>
+      </tr>
+    </thead>
+    <tbody>
+      {% for p in cases %}
+      <tr class="border-b hover:bg-blue-50 transition duration-300">
+        <td class="p-3 font-medium">{{ p.id }}</td>
+        <td class="p-3">{{ p.offender_name or 'Unknown' }}</td>
+        <td class="p-3">
+          {% if p.image_path %}
+          <a href="{{ url_for('static', filename='uploads/' + p.image_path.split('/')[-1]) }}" 
+             target="_blank" class="text-blue-600 hover:underline">View</a>
+          {% else %}
+          <span class="text-gray-400 italic">No Image</span>
+          {% endif %}
+        </td>
+        <td class="p-3">
+          {% if p.matched %}
+          <span class="px-2 py-1 bg-green-100 text-green-700 rounded-full text-xs font-semibold">Yes</span>
+          {% else %}
+          <span class="px-2 py-1 bg-red-100 text-red-700 rounded-full text-xs font-semibold">No</span>
+          {% endif %}
+        </td>
+        <td class="p-3">
+          {% if p.paid %}
+          <span class="px-2 py-1 bg-green-100 text-green-700 rounded-full text-xs font-semibold">Yes</span>
+          {% else %}
+          <span class="px-2 py-1 bg-yellow-100 text-yellow-700 rounded-full text-xs font-semibold">No</span>
+          {% endif %}
+        </td>
+        <td class="p-3">
+          {% if not p.paid %}
+            <a href="{{ url_for('main.send_reminder', case_id=p.id) }}" 
+               class="btn-hover inline-block px-3 py-1 bg-yellow-500 text-white rounded-lg text-sm">
+               📩 Send Reminder
+            </a>
+          {% else %}
+            <span class="px-2 py-1 bg-green-100 text-green-700 rounded-full text-xs font-semibold">
+              ✅ Paid
+            </span>
+          {% endif %}
+        </td>
+      </tr>
+      {% else %}
+      <tr>
+        <td colspan="6" class="p-4 text-center text-gray-500 italic">No penalty cases found.</td>
+      </tr>
+      {% endfor %}
+    </tbody>
+  </table>
+</div>
+</div>
 </body>
 </html>
